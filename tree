@@ -1,0 +1,31 @@
+/**
+ * Note: The TreeNode struct is already defined by the platform.
+ * DO NOT include its definition here.
+ */
+
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+        int globalMax = INT_MIN;
+        calculateSum(root, globalMax);
+        return globalMax;
+    }
+
+private:
+    int calculateSum(TreeNode* node, int& globalMax) {
+        if (!node) return 0;
+
+        // 1. Get max sum from branches, ignoring negative contributions
+        int leftSide = max(0, calculateSum(node->left, globalMax));
+        int rightSide = max(0, calculateSum(node->right, globalMax));
+
+        // 2. Check the path that peaks at the current node
+        int currentPathSum = node->val + leftSide + rightSide;
+
+        // 3. Update the global max record
+        globalMax = max(globalMax, currentPathSum);
+
+        // 4. Return the best single branch to the parent
+        return node->val + max(leftSide, rightSide);
+    }
+};
