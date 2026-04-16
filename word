@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_set>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        // Transfer wordList to a set for O(1) lookup
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        
+        // If the endWord isn't in the dictionary, no path exists
+        if (dict.find(endWord) == dict.end()) return 0;
+
+        // BFS setup: {current_word, level_count}
+        queue<pair<string, int>> q;
+        q.push({beginWord, 1});
+
+        while (!q.empty()) {
+            string word = q.front().first;
+            int level = q.front().second;
+            q.pop();
+
+            // If we reached the endWord, return the current step count
+            if (word == endWord) return level;
+
+            // Try changing every character of the word
+            for (int i = 0; i < word.length(); i++) {
+                char originalChar = word[i];
+
+                for (char c = 'a'; c <= 'z'; c++) {
+                    word[i] = c;
+
+                    // If the new word is in our dictionary
+                    if (dict.count(word)) {
+                        dict.erase(word); // Mark as visited by removing from set
+                        q.push({word, level + 1});
+                    }
+                }
+                // Restore the original character for the next position's check
+                word[i] = originalChar;
+            }
+        }
+
+        return 0; // No path found
+    }
+};
